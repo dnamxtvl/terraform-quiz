@@ -8,7 +8,7 @@ resource "aws_lambda_function" "log_channel" {
   function_name = "quiz-ecs-log-to-chat"
   role          = var.lambda_role_arn
   handler       = "log-channel.handler"
-  runtime       = "nodejs22.x"
+  runtime       = "nodejs24.x"
   filename      = data.archive_file.log_channel_zip.output_path
 
   source_code_hash = data.archive_file.log_channel_zip.output_base64sha256
