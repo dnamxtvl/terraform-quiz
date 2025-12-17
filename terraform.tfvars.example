@@ -1,0 +1,14 @@
+# Google Chat webhooks (replace with your real URLs)
+google_chat_general_webhook =
+google_chat_error_webhook   =
+
+# RDS credentials (replace with secure values)
+db_username =
+db_password =
+
+# Bastion host AMI ID (replace with a valid AMI ID for your region)
+baston_ami =
+bastion_key_name =
+
+# Domain name
+domain_name =

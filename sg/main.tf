@@ -1,9 +1,22 @@
 module "alb_sg" {
-  source              = "terraform-aws-modules/security-group/aws//modules/http-80"
-  name                = "alb-sg"
-  description         = "Security group for ALB"
-  vpc_id              = var.vpc.vpc_id
-  ingress_cidr_blocks = ["0.0.0.0/0"]
+  source      = "terraform-aws-modules/security-group/aws"
+  name        = "alb-sg"
+  description = "Security group for ALB - allow HTTP and HTTPS from internet"
+  vpc_id      = var.vpc.vpc_id
+
+  ingress_with_cidr_blocks = [
+    {
+      rule        = "http-80-tcp"
+      cidr_blocks = "0.0.0.0/0"
+    },
+    {
+      rule        = "https-443-tcp"
+      cidr_blocks = "0.0.0.0/0"
+    }
+  ]
+
+  egress_rules       = ["all-all"]
+  egress_cidr_blocks = ["0.0.0.0/0"]
 }
 
 module "web_sg" {

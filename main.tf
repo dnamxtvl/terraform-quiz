@@ -34,12 +34,20 @@ module "sg" {
   sg  = null
 }
 
+module "route53" {
+  source = "./route53"
+
+  domain_name = var.domain_name
+}
+
 module "alb" {
   source = "./alb"
 
   vpc                  = module.vpc
   sg                   = module.sg.sg_system
   container_nginx_port = 80
+  lb_acm_certificate_arn = module.route53.lb_acm_certificate_arn
+  domain_name = var.domain_name
 }
 
 module "rds" {

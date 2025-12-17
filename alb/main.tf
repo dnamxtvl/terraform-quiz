@@ -33,13 +33,49 @@ resource "aws_lb_target_group" "target_group" {
   }
 }
 
-resource "aws_lb_listener" "listener" {
+data "aws_route53_zone" "selected_zone" {
+  name         = var.domain_name
+  private_zone = false
+}
+
+
+# HTTP listener - redirect to HTTPS
+resource "aws_lb_listener" "http_listener" {
   load_balancer_arn = aws_lb.application_load_balancer.arn
   port              = "80"
   protocol          = "HTTP"
 
   default_action {
+    type = "redirect"
+    redirect {
+      port        = "443"
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
+  }
+}
+
+# HTTPS listener - forward to target group
+resource "aws_lb_listener" "listener" {
+  load_balancer_arn = aws_lb.application_load_balancer.arn
+  port              = "443"
+  protocol          = "HTTPS"
+  
+  certificate_arn = var.lb_acm_certificate_arn
+
+  default_action {
     type             = "forward"
     target_group_arn = aws_lb_target_group.target_group.arn
+  }
+}
+
+resource "aws_route53_record" "route53_A_record" {
+  zone_id = data.aws_route53_zone.selected_zone.zone_id
+  name    = "api.${var.domain_name}"
+  type    = "A"
+  alias {
+    name                   = aws_lb.application_load_balancer.dns_name
+    zone_id                = aws_lb.application_load_balancer.zone_id
+    evaluate_target_health = true
   }
 }
