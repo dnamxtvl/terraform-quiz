@@ -12,3 +12,34 @@ bastion_key_name =
 
 # Domain name
 domain_name =
+
+#firebase credentials
+firebase_api_key =
+firebase_app_id =
+firebase_auth_domain =
+firebase_measurement_id =
+firebase_messaging_sender_id =
+firebase_project_id =
+firebase_storage_bucket =
+firebase_vapid_key =
+
+#google client id and client secret
+google_client_id =
+
+#app url
+app_url =
+
+#reverb key
+reverb_key =
+
+#backend url
+backend_url =
+
+#backend host
+backend_host =
+
+# repository url
+repository_url =
+
+# front end domain name
+fe_domain =

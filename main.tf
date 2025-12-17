@@ -129,5 +129,33 @@ module "cloudwatch" {
   filter_pattern = ""
 }
 
+module "amplify" {
+  source = "./amplify"
+
+  amplify_iam_role_arn = module.iam.amplify_role_arn
+  domain_name          = var.domain_name
+
+  # Firebase credentials
+  firebase_api_key            = var.firebase_api_key
+  firebase_app_id             = var.firebase_app_id
+  firebase_auth_domain        = var.firebase_auth_domain
+  firebase_measurement_id      = var.firebase_measurement_id
+  firebase_messaging_sender_id = var.firebase_messaging_sender_id
+  firebase_project_id         = var.firebase_project_id
+  firebase_storage_bucket      = var.firebase_storage_bucket
+  firebase_vapid_key          = var.firebase_vapid_key
+
+  # Google credentials
+  google_client_id = var.google_client_id
+
+  # App configuration
+  app_url     = var.app_url
+  backend_url = var.backend_url
+  backend_host = var.backend_host
+  reverb_key  = var.reverb_key
+  repository_url = var.repository_url
+  fe_domain = var.fe_domain
+}
+
 # Data source for current AWS account ID
 data "aws_caller_identity" "current" {}
