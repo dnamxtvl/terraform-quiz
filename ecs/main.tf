@@ -6,8 +6,8 @@ resource "aws_ecs_task_definition" "task_definition" {
   family                   = "quiz-task-family"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
-  cpu                      = "256"
-  memory                   = "512"
+  cpu                      = "1024"
+  memory                   = "2048"
   execution_role_arn       = var.iam_execution_role_arn
   task_role_arn            = var.iam_task_role_arn
 
