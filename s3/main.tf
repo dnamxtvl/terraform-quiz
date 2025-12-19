@@ -1,6 +1,7 @@
 module "s3_bucket" {
   source  = "terraform-aws-modules/s3-bucket/aws"
   version = "~> 5.9"
+  region  = "ap-southeast-1"
 
   bucket = var.bucket_name
 
@@ -8,6 +9,9 @@ module "s3_bucket" {
   versioning = {
     enabled = var.enable_versioning
   }
+
+  # Allow deletion of non-empty bucket
+  force_destroy = true
 
   # Server-side encryption
   server_side_encryption_configuration = {
@@ -29,14 +33,17 @@ module "s3_bucket" {
   object_ownership         = "BucketOwnerEnforced"
 
   # Bucket policy - deny unencrypted uploads and non-HTTPS
-  attach_deny_unencrypted_object_uploads = true
-  attach_deny_insecure_transport_policy  = true
+  attach_deny_unencrypted_object_uploads = false
+  attach_deny_insecure_transport_policy  = false
 
   # Logging
   logging = var.enable_logging && var.log_bucket_name != "" ? {
     target_bucket = var.log_bucket_name
     target_prefix = "${var.bucket_name}/"
   } : {}
+
+  attach_policy = var.attach_policy
+  policy        = var.policy
 
   tags = var.tags
 }

@@ -15,8 +15,8 @@ data "aws_route53_zone" "selected_zone" {
 resource "aws_acm_certificate" "cloudfront_cert" {
   provider = aws.us-east-1
 
-  domain_name               = "quiz-cdn.${var.domain_name}"
-  subject_alternative_names = ["*.quiz-cdn.${var.domain_name}"]
+  domain_name               = "quizze-cdn.${var.domain_name}"
+  subject_alternative_names = ["*.quizze-cdn.${var.domain_name}"]
   validation_method         = "DNS"
 
   lifecycle {
@@ -47,7 +47,7 @@ resource "aws_route53_record" "cloudfront_cert_validation" {
 resource "aws_acm_certificate_validation" "cloudfront_cert" {
   provider = aws.us-east-1
 
-  certificate_arn = aws_acm_certificate.cloudfront_cert.arn
+  certificate_arn         = aws_acm_certificate.cloudfront_cert.arn
   validation_record_fqdns = [for record in aws_route53_record.cloudfront_cert_validation : record.fqdn]
 
   timeouts {
@@ -60,7 +60,7 @@ module "cloudfront" {
   source  = "terraform-aws-modules/cloudfront/aws"
   version = "6.0.2"
 
-  comment             = "Quiz App CDN"
+  comment             = "Quiz CDN"
   enabled             = true
   is_ipv6_enabled     = true
   price_class         = "PriceClass_200"
@@ -68,7 +68,7 @@ module "cloudfront" {
   wait_for_deployment = true
 
   # Custom domain with SSL
-  aliases = ["quiz-cdn.${var.domain_name}"]
+  aliases = ["quizze-cdn.${var.domain_name}"]
 
   viewer_certificate = {
     acm_certificate_arn      = aws_acm_certificate_validation.cloudfront_cert.certificate_arn
@@ -77,7 +77,8 @@ module "cloudfront" {
   }
 
   origin_access_control = {
-    s3_oac = {
+    quiz_s3_oac = {
+      name             = "quiz-app-s3-oac"
       description      = "CloudFront access to S3"
       origin_type      = "s3"
       signing_behavior = "always"
@@ -111,7 +112,7 @@ module "cloudfront" {
       custom_origin_config = {
         http_port              = 80
         https_port             = 443
-        origin_protocol_policy  = "https-only"
+        origin_protocol_policy = "https-only"
         origin_ssl_protocols   = ["TLSv1.2"]
       }
     }
@@ -134,7 +135,7 @@ module "cloudfront" {
   ]
 
   tags = {
-    Name    = "quiz-cdn"
+    Name    = "quizze-cdn"
     Project = "quiz-app"
     Env     = "production"
   }
@@ -143,7 +144,7 @@ module "cloudfront" {
 # Route53 record for CloudFront (module doesn't create this automatically)
 resource "aws_route53_record" "cloudfront_alias" {
   zone_id = data.aws_route53_zone.selected_zone.zone_id
-  name    = "quiz-cdn.${var.domain_name}"
+  name    = "quizze-cdn.${var.domain_name}"
   type    = "A"
 
   alias {

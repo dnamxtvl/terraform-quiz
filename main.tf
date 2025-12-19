@@ -43,11 +43,11 @@ module "route53" {
 module "alb" {
   source = "./alb"
 
-  vpc                  = module.vpc
-  sg                   = module.sg.sg_system
-  container_nginx_port = 80
+  vpc                    = module.vpc
+  sg                     = module.sg.sg_system
+  container_nginx_port   = 80
   lb_acm_certificate_arn = module.route53.lb_acm_certificate_arn
-  domain_name = var.domain_name
+  domain_name            = var.domain_name
 }
 
 module "rds" {
@@ -72,8 +72,22 @@ module "s3" {
   bucket_name         = "quiz-app-${data.aws_caller_identity.current.account_id}"
   enable_versioning   = true
   enable_encryption   = true
-  block_public_access = true
+  block_public_access = false
   enable_logging      = false
+
+  attach_policy = true
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid       = "PublicReadGetObject"
+        Effect    = "Allow"
+        Principal = "*"
+        Action    = "s3:GetObject"
+        Resource  = "arn:aws:s3:::quiz-app-${data.aws_caller_identity.current.account_id}/*"
+      },
+    ]
+  })
 
   tags = {
     Project = "quiz-app"
@@ -136,34 +150,34 @@ module "amplify" {
   domain_name          = var.domain_name
 
   # Firebase credentials
-  firebase_api_key            = var.firebase_api_key
-  firebase_app_id             = var.firebase_app_id
-  firebase_auth_domain        = var.firebase_auth_domain
+  firebase_api_key             = var.firebase_api_key
+  firebase_app_id              = var.firebase_app_id
+  firebase_auth_domain         = var.firebase_auth_domain
   firebase_measurement_id      = var.firebase_measurement_id
   firebase_messaging_sender_id = var.firebase_messaging_sender_id
-  firebase_project_id         = var.firebase_project_id
+  firebase_project_id          = var.firebase_project_id
   firebase_storage_bucket      = var.firebase_storage_bucket
-  firebase_vapid_key          = var.firebase_vapid_key
+  firebase_vapid_key           = var.firebase_vapid_key
 
   # Google credentials
   google_client_id = var.google_client_id
 
   # App configuration
-  app_url     = var.app_url
-  backend_url = var.backend_url
-  backend_host = var.backend_host
-  reverb_key  = var.reverb_key
+  app_url        = var.app_url
+  backend_url    = var.backend_url
+  backend_host   = var.backend_host
+  reverb_key     = var.reverb_key
   repository_url = var.repository_url
-  fe_domain = var.fe_domain
+  fe_domain      = var.fe_domain
 }
 
 module "cloudfront" {
   source = "./cloudfront"
 
-  domain_name                      = var.domain_name
-  s3_bucket_regional_domain_name   = module.s3.bucket_regional_domain_name
-  s3_bucket_id                     = module.s3.bucket_id
-  route53_zone_id                  = module.route53.zone_id
+  domain_name                    = var.domain_name
+  s3_bucket_regional_domain_name = module.s3.bucket_regional_domain_name
+  s3_bucket_id                   = module.s3.bucket_id
+  route53_zone_id                = module.route53.zone_id
 }
 
 # Data source for current AWS account ID

@@ -38,3 +38,15 @@ variable "tags" {
   default     = {}
   description = "Tags for S3 bucket"
 }
+
+variable "attach_policy" {
+  type        = bool
+  default     = false
+  description = "Controls if S3 bucket should have bucket policy attached (set to `true` to use value of `policy` as bucket policy)"
+}
+
+variable "policy" {
+  type        = string
+  default     = null
+  description = "(Optional) A valid bucket policy JSON document. Optional. Note that if the policy document is not specific enough (but still valid), Terraform may view the policy as constantly changing in a terraform plan. In this case, please make sure you use the verbose/specific version of the policy. For more information about building AWS IAM policy documents with Terraform, see the AWS IAM Policy Document Guide."
+}
