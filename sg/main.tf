@@ -30,6 +30,12 @@ module "web_sg" {
       to_port                  = 80
       protocol                 = "tcp"
       source_security_group_id = module.alb_sg.security_group_id
+    },
+    {
+      from_port                = 8080
+      to_port                  = 8080
+      protocol                 = "tcp"
+      source_security_group_id = module.alb_sg.security_group_id
     }
   ]
   # Allow outbound HTTPS, MySQL, Redis to VPC endpoints and external
