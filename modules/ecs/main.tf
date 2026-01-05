@@ -103,7 +103,7 @@ resource "aws_appautoscaling_policy" "dev_to_memory" {
   service_namespace  = aws_appautoscaling_target.ecs_target.service_namespace
 
   target_tracking_scaling_policy_configuration {
-    target_value = 85
+    target_value = var.target_value_memory_scale
     predefined_metric_specification {
       predefined_metric_type = "ECSServiceAverageMemoryUtilization"
     }
@@ -118,7 +118,7 @@ resource "aws_appautoscaling_policy" "dev_to_cpu" {
   service_namespace  = aws_appautoscaling_target.ecs_target.service_namespace
 
   target_tracking_scaling_policy_configuration {
-    target_value = 85
+    target_value = var.target_value_cpu_scale
     predefined_metric_specification {
       predefined_metric_type = "ECSServiceAverageCPUUtilization"
     }

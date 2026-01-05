@@ -50,3 +50,14 @@ variable "max_capacity" {
   default = 1
 }
 
+variable "target_value_memory_scale" {
+  type    = number
+  default = 85
+}
+
+variable "target_value_cpu_scale" {
+  type    = number
+  default = 85
+}
+
+

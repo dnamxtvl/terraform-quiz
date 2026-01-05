@@ -17,6 +17,10 @@ domain_name =
 min_capacity =
 max_capacity =
 
+#ECS target value
+target_value_memory_scale =
+target_value_cpu_scale =
+
 #firebase credentials
 firebase_api_key =
 firebase_app_id =
