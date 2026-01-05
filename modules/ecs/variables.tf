@@ -39,3 +39,14 @@ variable "container_fpm_port" {
   type    = number
   default = 9000
 }
+
+variable "min_capacity" {
+  type    = number
+  default = 1
+}
+
+variable "max_capacity" {
+  type    = number
+  default = 1
+}
+
