@@ -17,7 +17,7 @@ provider "aws" {
 }
 
 module "vpc" {
-  source = "./vpc"
+  source = "../modules/vpc"
 
   vpc_cidr_block             = "10.0.0.0/16"
   public_subnet              = ["10.0.4.0/24", "10.0.5.0/24"]
@@ -28,20 +28,20 @@ module "vpc" {
 }
 
 module "sg" {
-  source = "./sg"
+  source = "../modules/sg"
 
   vpc = module.vpc
   sg  = null
 }
 
 module "route53" {
-  source = "./route53"
+  source = "../modules/route53"
 
   domain_name = var.domain_name
 }
 
 module "alb" {
-  source = "./alb"
+  source = "../modules/alb"
 
   vpc                    = module.vpc
   sg                     = module.sg.sg_system
@@ -51,13 +51,13 @@ module "alb" {
 }
 
 module "waf" {
-  source = "./waf"
+  source = "../modules/waf"
 
   alb_arn = module.alb.alb_arn
 }
 
 module "rds" {
-  source = "./rds"
+  source = "../modules/rds"
 
   vpc         = module.vpc
   sg          = module.sg.sg_system
@@ -66,14 +66,14 @@ module "rds" {
 }
 
 module "elasticache" {
-  source = "./elasticCache"
+  source = "../modules/elasticCache"
 
   elasticache_subnet_group_name = module.vpc.elasticache_subnet_group_name
   sg                            = module.sg.sg_system
 }
 
 module "s3" {
-  source = "./s3"
+  source = "../modules/s3"
 
   bucket_name         = "quiz-app-${data.aws_caller_identity.current.account_id}"
   enable_versioning   = true
@@ -97,20 +97,20 @@ module "s3" {
 
   tags = {
     Project = "quiz-app"
-    Env     = "production"
+    Env     = "development"
   }
 }
 
 module "iam" {
-  source = "./iam"
+  source = "../modules/iam"
 }
 
 module "ecr" {
-  source = "./ecr"
+  source = "../modules/ecr"
 }
 
 module "ec2" {
-  source = "./ec2"
+  source = "../modules/ec2"
 
   vpc                        = module.vpc
   ami_id                     = var.baston_ami
@@ -119,7 +119,7 @@ module "ec2" {
 }
 
 module "lambda" {
-  source = "./lambda"
+  source = "../modules/lambda"
 
   lambda_role_arn             = module.iam.lambda_exec_role_arn
   google_chat_general_webhook = var.google_chat_general_webhook
@@ -127,7 +127,7 @@ module "lambda" {
 }
 
 module "ecs" {
-  source = "./ecs"
+  source = "../modules/ecs"
 
   vpc                    = module.vpc
   sg                     = module.sg.sg_system
@@ -142,7 +142,7 @@ module "ecs" {
 }
 
 module "cloudwatch" {
-  source = "./cloudwatch"
+  source = "../modules/cloudwatch"
 
   lambda_arn     = module.lambda.lambda_arn
   log_group_name = "/ecs/quiz-task-family"
@@ -150,7 +150,7 @@ module "cloudwatch" {
 }
 
 module "amplify" {
-  source = "./amplify"
+  source = "../modules/amplify"
 
   amplify_iam_role_arn = module.iam.amplify_role_arn
   domain_name          = var.domain_name
@@ -178,7 +178,7 @@ module "amplify" {
 }
 
 module "cloudfront" {
-  source = "./cloudfront"
+  source = "../modules/cloudfront"
 
   domain_name                    = var.domain_name
   s3_bucket_regional_domain_name = module.s3.bucket_regional_domain_name

@@ -13,6 +13,10 @@ bastion_key_name =
 # Domain name
 domain_name =
 
+#ECS capacity
+min_capacity =
+max_capacity =
+
 #firebase credentials
 firebase_api_key =
 firebase_app_id =
