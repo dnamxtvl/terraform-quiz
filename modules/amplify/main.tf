@@ -39,20 +39,20 @@ resource "aws_amplify_app" "quizz_app" {
   }
 
   environment_variables = {
-    BACKEND_HOST                = var.backend_host
-    BACKEND_URL                 = var.backend_url
-    FIREBASE_API_KEY            = var.firebase_api_key
-    FIREBASE_APP_ID             = var.firebase_app_id
-    FIREBASE_AUTH_DOMAIN        = var.firebase_auth_domain
+    BACKEND_HOST                 = var.backend_host
+    BACKEND_URL                  = var.backend_url
+    FIREBASE_API_KEY             = var.firebase_api_key
+    FIREBASE_APP_ID              = var.firebase_app_id
+    FIREBASE_AUTH_DOMAIN         = var.firebase_auth_domain
     FIREBASE_MEASUREMENT_ID      = var.firebase_measurement_id
     FIREBASE_MESSAGING_SENDER_ID = var.firebase_messaging_sender_id
-    FIREBASE_PROJECT_ID         = var.firebase_project_id
-    FIREBASE_STORAGE_BUCKET     = var.firebase_storage_bucket
-    FIREBASE_VAPID_KEY          = var.firebase_vapid_key
-    GOOGLE_CLIENT_ID            = var.google_client_id
-    FRONTEND_URL                = var.app_url
-    PORT                        = 8088
-    REVERB_KEY                  = var.reverb_key
+    FIREBASE_PROJECT_ID          = var.firebase_project_id
+    FIREBASE_STORAGE_BUCKET      = var.firebase_storage_bucket
+    FIREBASE_VAPID_KEY           = var.firebase_vapid_key
+    GOOGLE_CLIENT_ID             = var.google_client_id
+    FRONTEND_URL                 = var.app_url
+    PORT                         = 8088
+    REVERB_KEY                   = var.reverb_key
   }
 
   # Custom headers for security
@@ -65,31 +65,31 @@ resource "aws_amplify_app" "quizz_app" {
 }
 
 resource "aws_amplify_branch" "master" {
-  app_id      = aws_amplify_app.quizz_app.id
-  branch_name = "master"
-  display_name = "master"
-  description = "Master branch"
+  app_id            = aws_amplify_app.quizz_app.id
+  branch_name       = "master"
+  display_name      = "master"
+  description       = "Master branch"
   enable_auto_build = true
-  framework   = "nuxt"
+  framework         = "nuxt"
 
-  enable_notification = false
+  enable_notification         = false
   enable_pull_request_preview = false
 
   environment_variables = {
-    BACKEND_HOST                = var.backend_host
-    BACKEND_URL                 = var.backend_url
-    FIREBASE_API_KEY            = var.firebase_api_key
-    FIREBASE_APP_ID             = var.firebase_app_id
-    FIREBASE_AUTH_DOMAIN        = var.firebase_auth_domain
+    BACKEND_HOST                 = var.backend_host
+    BACKEND_URL                  = var.backend_url
+    FIREBASE_API_KEY             = var.firebase_api_key
+    FIREBASE_APP_ID              = var.firebase_app_id
+    FIREBASE_AUTH_DOMAIN         = var.firebase_auth_domain
     FIREBASE_MEASUREMENT_ID      = var.firebase_measurement_id
     FIREBASE_MESSAGING_SENDER_ID = var.firebase_messaging_sender_id
-    FIREBASE_PROJECT_ID         = var.firebase_project_id
-    FIREBASE_STORAGE_BUCKET     = var.firebase_storage_bucket
-    FIREBASE_VAPID_KEY          = var.firebase_vapid_key
-    GOOGLE_CLIENT_ID            = var.google_client_id
-    FRONTEND_URL                = var.app_url
-    PORT                        = 8088
-    REVERB_KEY                  = var.reverb_key
+    FIREBASE_PROJECT_ID          = var.firebase_project_id
+    FIREBASE_STORAGE_BUCKET      = var.firebase_storage_bucket
+    FIREBASE_VAPID_KEY           = var.firebase_vapid_key
+    GOOGLE_CLIENT_ID             = var.google_client_id
+    FRONTEND_URL                 = var.app_url
+    PORT                         = 8088
+    REVERB_KEY                   = var.reverb_key
   }
 }
 # Data source for Route53 zone
@@ -101,7 +101,7 @@ data "aws_route53_zone" "selected_zone" {
 # Custom domain for Amplify app
 resource "aws_amplify_domain_association" "main" {
   app_id      = aws_amplify_app.quizz_app.id
-  domain_name = var.domain_name  # Root domain: 5qsoft.com
+  domain_name = var.domain_name # Root domain: 5qsoft.com
 
   # quiz subdomain (quiz.5qsoft.com)
   sub_domain {
@@ -138,7 +138,7 @@ resource "aws_route53_record" "quiz_amplify" {
   # Parse dns_record: "quiz CNAME dbwjtoa0eebni.cloudfront.net"
   records = [
     for subdomain in aws_amplify_domain_association.main.sub_domain :
-    split(" ", subdomain.dns_record)[2]  # Get the CloudFront domain
+    split(" ", subdomain.dns_record)[2] # Get the CloudFront domain
     if subdomain.prefix == "quiz"
   ]
 

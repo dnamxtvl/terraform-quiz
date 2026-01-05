@@ -31,7 +31,7 @@ module "web_sg" {
       protocol                 = "tcp"
       source_security_group_id = module.alb_sg.security_group_id
     },
-    { 
+    {
       from_port                = 443
       to_port                  = 443
       protocol                 = "tcp"
